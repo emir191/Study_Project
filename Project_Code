@@ -1,0 +1,370 @@
+import tkinter as tk
+import numpy as np
+ogrenci_cevaplari = [] 
+toplam = 0
+cevap_bekleniyor = False
+quiz= []
+cevaplar=[]
+sayfa=tk.Tk()
+sayfa.title=("hi")
+
+#Alt Box
+soru_listesi = tk.Listbox(sayfa)
+soru_listesi.pack(side="right", fill="y")
+def Kaydet():
+    soru=entry.get()
+    quiz.append(soru)
+    entry.delete(0, tk.END) 
+    goster_label.config(text="Soru başarıyla kaydedildi!")
+def Cevap_Kaydet():
+    cevap=entry1.get()
+    cevaplar.append(cevap)
+    entry1.delete(0, tk.END) 
+    goster_label.config(text="Cevap başarıyla kaydedildi!")
+
+def birleşik_gösterim():
+    
+    tum_cevaplar = "\n".join(cevaplar) 
+    
+    tum_sorular = "\n".join(quiz)
+    for i in range(len(quiz)):
+
+        cevap_gos.config(text=f"Soru:\n {tum_sorular}  \n\n Cevap:\n {tum_cevaplar}")
+def Sorulari_Goster():
+    tum_sorular = "\n".join(quiz)
+    cevap_gos.config(text=f"Soru:\n {tum_sorular}")
+    
+def Cevap_Goster():
+   
+   
+    cevap_gos.config(text=f"Cevaplar: {cevaplar} ")
+
+dogru_sifre = "1234"  # Doğru şifre
+
+# Şifre girişi için alan
+sifre_etiketi = tk.Label(sayfa, text="Şifre:")
+sifre_etiketi.pack()
+sifre_alani = tk.Entry(sayfa, show="*")
+sifre_alani.pack()
+
+# Şifreyi kontrol eden fonksiyon
+def sifre_kontrol():
+    girdi_sifre = sifre_alani.get()
+    if girdi_sifre == dogru_sifre:
+        entry.config(state="normal")  # Soru girişi alanını aktif hale getir
+        goster_label.config(text="Giriş başarılı!")
+        goster_button.config(state="normal")  # "Soru ve Cevapları Birlikte Göster" butonunu aktif hale getir
+        goster_button1.config(state="normal")  # "Tüm Cevapları Göster" butonunu aktif hale getir
+        zaman_baslat_butonu.config(state="normal")
+        zaman_durdur_butonu.config(state="normal")
+    else:
+        goster_label.config(text="Yanlış şifre!")
+
+# Çıkış fonksiyonu
+def cikis():
+    entry.config(state="disabled")  # Soru girişi alanını devre dışı bırak
+    goster_label.config(text="")  # Gösterge alanını temizle
+    goster_button.config(state="disabled")  # "Soru ve Cevapları Birlikte Göster" butonunu devre dışı bırak
+    goster_button1.config(state="disabled")  # "Tüm Cevapları Göster" butonunu devre dışı bırak
+    sifre_alani.delete(0, tk.END)  # Şifre alanını temizle
+    cevap_gos.config(text="")  # "Cevaplar" alanını temizl
+# Şifre kontrol düğmesi
+sifre_kontrol_butonu = tk.Button(sayfa, text="Giriş Yap", command=sifre_kontrol)
+sifre_kontrol_butonu.pack()
+
+# Çıkış düğmesi
+cikis_butonu = tk.Button(sayfa, text="Çıkış Yap", command=cikis)
+cikis_butonu.pack() 
+#def goster():
+    # Tüm soruları birleştirelim
+   # tum_sorular = "\n".join(quiz)
+    #goster_label.config(text=tum_sorular)
+# Soru girişi için
+label = tk.Label(sayfa, text="Soruyu Girin:")
+label.pack()
+entry = tk.Entry(sayfa, state="disabled")
+entry.pack()
+# Kaydet butonu
+kaydet_button = tk.Button(sayfa, text="Soruyu Kaydet", command=Kaydet)
+kaydet_button.pack()
+#Cevap Girişi için
+label = tk.Label(sayfa, text="Cevabı Girin:")
+label.pack()
+entry1 = tk.Entry(sayfa)
+entry1.pack()
+
+#Cevap KAYDETME Butonu
+cevap_button=tk.Button(sayfa,text="Cevabı Kaydet",command=Cevap_Kaydet)
+cevap_button.pack()
+#Cevabı Göster Butonu
+goster_button1 = tk.Button(sayfa, text="Tüm Cevapları Göster", command=Cevap_Goster, state="disabled")
+goster_button1.pack()
+#Soruları Göster Butonu
+goster_button2 = tk.Button(sayfa, text="Tüm Soruları Göster", command=Sorulari_Goster, state="normal")
+goster_button2.pack()
+# Göster butonu (başlangıçta devre dışı)
+goster_button = tk.Button(sayfa, text="Soru ve Cevapları Birlikte Göster", command=birleşik_gösterim, state="disabled")
+goster_button.pack()
+goster_label = tk.Label(soru_listesi, text="")
+goster_label.pack()
+#Cevapların Gösterileceği Etiket
+cevap_gos=tk.Label(soru_listesi, text="")
+cevap_gos.pack()
+
+def degerlendir():
+    if len(quiz) == len(cevaplar) == len(ogrenci_cevaplari):
+        degerlendirme_mesaji = "Değerlendirme:\n"
+        for i in range(len(quiz)):
+            if ogrenci_cevaplari[i].lower() == cevaplar[i].lower():
+                degerlendirme_mesaji += f"Soru {i+1}: Doğru\n"
+            else:
+                degerlendirme_mesaji += f"Soru {i+1}: Yanlış\n"
+        goster_label.config(text=degerlendirme_mesaji)
+        goster_button1.config(state="normal")  # "Tüm Cevapları Göster" butonunu aktif hale getir
+    else:
+        goster_label.config(text="Tüm sorular ve cevaplar girilmelidir.")
+
+
+# Öğrenci cevaplarını alan giriş alanı
+label2 = tk.Label(sayfa, text="Öğrenci Cevabını Girin:")
+label2.pack()
+entry2 = tk.Entry(sayfa)
+entry2.pack()
+
+# Öğrenci cevabını kaydeden fonksiyon
+def ogrenci_cevabi_kaydet():
+    cevap=entry2.get()
+    ogrenci_cevaplari.append(cevap)
+    entry2.delete(0, tk.END) 
+    goster_label.config(text="Cevap başarıyla kaydedildi!")
+    #ogrenci_cevaplari.append(entry2.get())
+
+# Öğrenci cevabını kaydeden buton
+cevap_kaydet_butonu = tk.Button(sayfa, text="Öğrenci Cevabını Kaydet", command=ogrenci_cevabi_kaydet)
+cevap_kaydet_butonu.pack()
+
+# Değerlendirme butonu
+degerlendirme_butonu = tk.Button(sayfa, text="Değerlendir", command=degerlendir)
+degerlendirme_butonu.pack()
+#NEEEW
+#soru_cevap = {}
+#cevap_label = tk.Label(sayfa, text="Cevabı Girin:")
+#cevap_label.pack()
+#cevap_entry = tk.Entry(sayfa)
+#cevap_entry.pack()
+# Süre başlatma butonu
+# Süre işlemleri için fonksiyon
+# Süre göstergesi (başlangıçta gizli)
+sure_label = tk.Label(sayfa, text="", font=("Arial", 20))  # <--- Değişen yer burası
+sure_label.pack(side="top")
+import time
+# Süre işlemleri için fonksiyon
+def zaman_hesapla():
+    global baslangic_zamani, sure_calisiyor
+    baslangic_zamani = time.time()
+    sure_calisiyor = True
+    goster_label.config(text="")  # Başlangıçta göstergeyi temizle
+    sure_label.config(text="Süre başladı!")  # Süre göstergesini aktif et
+    zaman_baslat_butonu.config(state="disabled")
+    zaman_durdur_butonu.config(state="disabled")
+    zaman_guncelle()
+
+# Süreyi güncelleyen fonksiyon
+def zaman_guncelle():
+    global baslangic_zamani, sure_calisiyor
+    if sure_calisiyor:
+        gecen_sure = int(time.time() - baslangic_zamani)
+        sure_label.config(text=f"Süre: {gecen_sure} saniye")  # Süre göstergesini güncelle
+        sayfa.after(1000, zaman_guncelle)  # 1 saniye sonra tekrar çağır
+
+# Süre işlemlerini durdurmak için fonksiyon
+def durdur_sure():
+    global sure_calisiyor
+    sure_calisiyor = False
+    #sure_label.config(text="")  # Süre göstergesini gizle
+    sure_label.pack(side="right") 
+    goster_label.config(text="Süre durduruldu!")
+    zaman_baslat_butonu.config(state="normal")
+    zaman_durdur_butonu.config(state="disabled")
+# Süre başlatma butonu
+zaman_baslat_butonu = tk.Button(sayfa, text="Süre Başlat", command=zaman_hesapla, state="normal")
+zaman_baslat_butonu.pack()
+#zaman_baslat_butonu.grid(row=1, column=0, columnspan=2, pady=10)  
+
+
+# Süre durdurma butonu
+zaman_durdur_butonu = tk.Button(sayfa, text="Süre Durdur", command=durdur_sure, state="disabled")
+zaman_durdur_butonu.pack()
+
+
+#sayfa.mainloop()
+import tkinter as tk  # Tkinter kütüphanesini 'tk' olarak içe aktar
+import random  # Rastgele sayı üretmek için 'random' kütüphanesini içe aktar
+def bolucu_makine():
+    global toplam
+    while True:
+        sayi1 = random.randint(1,100)
+        sayi2 = random.randint(1,100)
+        if sayi1 % sayi2 == 0:  # Eğer sayi1, sayi2'ye tam bölünürse
+            toplam = sayi1 // sayi2
+            return sayi1, sayi2, toplam
+
+   
+   
+def carpma_makinesi():
+    global toplam
+    sayi1 = random.randint(0, 100)
+    sayi2 = random.randint(0, 100) 
+    toplam = sayi1 * sayi2
+    return sayi1, sayi2, toplam
+
+def cikarma_makinesi():
+    global toplam
+    sayi1 = random.randint(0, 100)
+    sayi2 = random.randint(0, 100) 
+    toplam = sayi1 - sayi2
+    return sayi1, sayi2, toplam
+
+# Botun olası yanıtlarını içeren bir sözlük tanımla
+def toplayici_makine():
+    global toplam
+    # Toplama makinesinin işlemini yapın
+    sayi1 = random.randint(0, 100)
+    sayi2 = random.randint(0, 100) 
+
+    toplam = sayi1 + sayi2
+    #print(f"{sayi1} + {sayi2} = {toplam}")
+    return sayi1, sayi2, toplam# Toplama sonucunu döndürün
+sohbet = {
+    "matematik": ["Toplama, çıkarma, bölme ya da çarpma işlemlerinden birini seçmek için 'toplama', 'çıkarma', 'çarpma' veya 'bölme' yaz."] ,
+    "işlemi":["toplama,çıkarma bölme ya da çarpma yaz"],
+    "merhaba": ["Merhaba!", "Selamlar!", "Nasılsın?"],  # "Merhaba" kelimesine karşılık gelen olası yanıtlar
+    "nasılsın": ["İyiyim, teşekkür ederim. Sana nasıl yardımcı olabilirim?", "Gayet iyiyim, teşekkür ederim.Sana nasıl yardımcı olabilirim?"],  # "Nasılsın" kelimesine karşılık gelen olası yanıtlar
+    "kimsin": ["Ben bir eğitim botuyum. Öğrenciye yardımcı olmak için buradayım.", "Ben bir yapay zekâ destekli chatbot'um."],  # "Kimsin" kelimesine karşılık gelen olası yanıtlar
+    "ne yapabilirsin": ["Sorularını cevaplayabilirim.", "Ödevlerinle ilgili yardımcı olabilirim.", "Öğretmenlerinle ilgili sorularına yanıt verebilirim."],  # "Ne yapabilirsin" kelimesine karşılık gelen olası yanıtlar
+    "elveda": ["Görüşmek üzere!", "Hoşçakalın!", "Tekrar görüşmek üzere."]  # "Elveda" kelimesine karşılık gelen olası yanıtlar
+}
+
+
+# Kullanıcı girdisini alıp botun yanıtını oluşturan fonksiyon
+def yanit_ver():
+    global toplam, cevap_bekleniyor
+    
+    # Kullanıcı girdisini girdi alanından al
+    girdi = girdi_alanı.get("1.0", tk.END).strip()
+    # Girdi alanını temizle
+    girdi_alanı.delete("1.0", tk.END)
+
+    # Kullanıcı "çıkış" yazdıysa arayüzü kapat
+    if girdi.lower() == "çarpma":
+        sayi1, sayi2, toplam = carpma_makinesi() # Toplama makinesinden sonucu alın
+        # Sonucu çıktı alanına yazdırın
+        cikti_alanı.config(state=tk.NORMAL)
+        cikti_alanı.insert(tk.END, f"{sayi1} * {sayi2} = ?\n")
+        cikti_alanı.config(state=tk.DISABLED)
+        cevap_bekleniyor = True
+        return
+    if girdi.lower() == "bölme":
+        sayi1, sayi2, toplam = bolucu_makine() # Toplama makinesinden sonucu alın
+        # Sonucu çıktı alanına yazdırın
+        cikti_alanı.config(state=tk.NORMAL)
+        cikti_alanı.insert(tk.END, f"{sayi1} / {sayi2} = ?\n")
+        cikti_alanı.config(state=tk.DISABLED)
+        cevap_bekleniyor = True
+          # Fonksiyonu burada sonlandırın
+        return
+    if girdi.lower() == "toplama":
+        sayi1, sayi2, toplam = toplayici_makine() # Toplama makinesinden sonucu alın
+        # Sonucu çıktı alanına yazdırın
+        cikti_alanı.config(state=tk.NORMAL)
+        cikti_alanı.insert(tk.END, f"{sayi1} + {sayi2} = ?\n")
+        cikti_alanı.config(state=tk.DISABLED)
+        cevap_bekleniyor = True
+          # Fonksiyonu burada sonlandırın
+        return  # Fonksiyonu burada sonlandırın # Kullanıcı "toplama" yazdığında fonksiyonu çağırın
+    if girdi.lower() == "çıkarma":
+        sayi1, sayi2, toplam = cikarma_makinesi() # Toplama makinesinden sonucu alın
+        # Sonucu çıktı alanına yazdırın
+        cikti_alanı.config(state=tk.NORMAL)
+        cikti_alanı.insert(tk.END, f"{sayi1} - {sayi2} = ?\n")
+        cikti_alanı.config(state=tk.DISABLED)
+        cevap_bekleniyor = True 
+        return   
+    if girdi.lower() == "çıkış":
+        sayfa.destroy()  # Arayüzü kapat
+        return
+
+    # Kullanıcı girdisini `sohbet` sözlüğünde ara
+    for anahtar, degerler in sohbet.items():
+        if anahtar in girdi.lower():  # Kullanıcı girdisinde anahtar kelime varsa
+            yanıt = random.choice(degerler)  # Anahtar kelimeye karşılık gelen olası yanıtları arasından rastgele birini seç
+            # Çıktı alanını yazmaya aç
+            cikti_alanı.config(state=tk.NORMAL)
+            # Çıktı alanına botun yanıtını ekle
+            cikti_alanı.insert(tk.END, "Bot: " + yanıt + "\n")
+            # Çıktı alanını yazmaya kapat
+            cikti_alanı.config(state=tk.DISABLED)
+            cikti_alanı.see(tk.END) 
+            break  # Döngüyü kır
+    else:
+        if cevap_bekleniyor:
+            try:
+                cevap = float(girdi)
+                if cevap == toplam:
+                    cikti_alanı.config(state=tk.NORMAL)
+                    cikti_alanı.insert(tk.END, "Bot: Aferin!\n")
+                    cikti_alanı.config(state=tk.DISABLED)
+                    cevap_bekleniyor = False
+                    cikti_alanı.see(tk.END) 
+                else:
+                    cikti_alanı.config(state=tk.NORMAL)
+                    cikti_alanı.insert(tk.END, f"Bot: Yanlış cevap. Cevap {toplam} olacaktı.\n")
+                    cikti_alanı.config(state=tk.DISABLED)
+                    cevap_bekleniyor = False
+                    cikti_alanı.see(tk.END) 
+            except ValueError:
+                cikti_alanı.config(state=tk.NORMAL)
+                cikti_alanı.insert(tk.END, "Bot: Lütfen geçerli bir sayı girin.\n")
+                cikti_alanı.config(state=tk.DISABLED)
+                cevap_bekleniyor = True
+                cikti_alanı.see(tk.END) 
+        else:
+            cikti_alanı.config(state=tk.NORMAL)
+            cikti_alanı.insert(tk.END, "Bot: Anlamadım. Lütfen başka bir soru sor.\n")
+            cikti_alanı.config(state=tk.DISABLED)
+            cikti_alanı.see(tk.END) 
+        #cikti_alanı.config(state=tk.NORMAL)
+        # Çıktı alanına anlamadığını bildiren mesajı ekle
+        #cikti_alanı.insert(tk.END, "Bot: Anlamadım. Lütfen başka bir soru sor.\n")
+        # Çıktı alanını yazmaya kapat
+        #cikti_alanı.config(state=tk.DISABLED)
+
+
+
+# Kullanıcı girdisi için etiket oluştur
+girdi_etiketi = tk.Label(sayfa, text="Sen:")
+# Etiketi sayfaya yerleştir
+girdi_etiketi.pack()
+
+# Kullanıcı girdisi için alan oluştur
+girdi_alanı = tk.Text(sayfa, height=3)
+# Alanı sayfaya yerleştir
+girdi_alanı.pack()
+
+# Gönder düğmesini oluştur
+gonder_butonu = tk.Button(sayfa, text="Gönder", command=yanit_ver)  # Düğmeye tıklandığında `yanit_ver` fonksiyonunu çağır
+# Düğmeyi sayfaya yerleştir
+gonder_butonu.pack()
+
+# Botun yanıtlarını göstermek için etiket oluştur
+cikti_etiketi = tk.Label(sayfa, text="Bot:")
+# Etiketi sayfaya yerleştir
+cikti_etiketi.pack()
+
+# Botun yanıtlarını göstermek için alan oluştur
+cikti_alanı = tk.Text(sayfa, height=10, state=tk.DISABLED)  # Başlangıçta yazmaya kapat
+# Alanı sayfaya yerleştir
+cikti_alanı.pack()
+
+# Arayüzü çalıştır
+sayfa.mainloop()
